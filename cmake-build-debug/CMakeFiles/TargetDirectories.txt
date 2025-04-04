@@ -1,0 +1,4 @@
+/home/angel/CLionProjects/Allocators/cmake-build-debug/CMakeFiles/Allocators.dir
+/home/angel/CLionProjects/Allocators/cmake-build-debug/CMakeFiles/Test.dir
+/home/angel/CLionProjects/Allocators/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/angel/CLionProjects/Allocators/cmake-build-debug/CMakeFiles/rebuild_cache.dir
