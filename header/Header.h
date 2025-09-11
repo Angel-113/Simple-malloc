@@ -12,7 +12,7 @@ typedef unsigned long Header;
 extern bool IsFree ( Header header );
 extern bool IsRed ( Header header );
 
-extern Header InitHeader ( unsigned long size, bool free );
+extern Header InitHeader (unsigned long size, bool free, bool red);
 extern unsigned long GetSize ( Header header );
 extern void SetFree ( Header* header );
 extern void SetInUse ( Header* header );

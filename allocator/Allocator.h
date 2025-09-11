@@ -2,7 +2,8 @@
 #define ALLOCATORS_ALLOCATOR_H
 
 #include <sys/mman.h>
-#include "MemTree.h"
+#include <stdarg.h>
+#include "../memtree/MemTree.h"
 
 typedef void* (*alloc_fn)( unsigned long );
 typedef void* (*realloc_fn)( unsigned long );
@@ -13,5 +14,8 @@ typedef struct Allocator {
     realloc_fn realloc;
     free_fn free;
 } Allocator;
+
+Allocator InitAllocator ( void );
+Allocator CustomAllocator ( alloc_fn,  free_fn,  realloc_fn );
 
 #endif //ALLOCATORS_ALLOCATOR_H
