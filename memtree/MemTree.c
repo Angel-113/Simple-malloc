@@ -1,5 +1,4 @@
 #include "MemTree.h"
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +9,6 @@ bool __red = true;
 bool __black = false;
 
 /* Helper functions */
-
 Node* RBTSearch ( Node *root, const unsigned long size ) { /* Best fit */
     Node *current = root ? root : __root; /* if root is NULL then uses the original *__root tree */
     Node *result = &__sentinel;
@@ -130,7 +128,7 @@ static Node* RightRotation ( Node *node ) {
 /* Tree info */
 
 Node* GetRoot ( void ) { return __root; }
-const unsigned char* GetData ( Node *node ) { return (unsigned char*) &node->nodes; }
+const unsigned char* GetData ( Node *node ) { return node ? (unsigned char*) &node->nodes : NULL; }
 
 /* Principal Operations Performed by a Red-Black Tree (Insertion, Deletion and its fixes)  */
 
@@ -216,6 +214,7 @@ void RBTInsert ( Node *root, Node *node ) {
     Node *parent = RBTSearchInsert(current, GetSize(node->header));
     parent->nodes[GetSize(node->header) <= GetSize(parent->header) ? _left : _right] = node;
     node->nodes[_parent] = parent;
+    SetFree(&node->header);
     SetColor(&node->header, __red);
     FixInsertion(node);
 }
@@ -267,27 +266,32 @@ static void FixDeletion ( Node *node, const bool color ) { /* Fixes the violatio
 }
 
 static void SwapInOrder (Node** node, Node** inorder) {
-    Node* aux_child_inr = (*inorder)->nodes[_right];
-    Node* children[2] = { (*node)->nodes[_left], (*node)->nodes[_right] };
-    Node* parent = (*node)->nodes[_parent];
+    Node* parent_root = (*node)->nodes[_parent];
     Node* parent_inr = (*inorder)->nodes[_parent];
-    bool is_root = *node == __root;
+    Node* child_inr = (*inorder)->nodes[_right];
+    Node* child_left = (*node)->nodes[_left];
+    Node* child_right = (*node)->nodes[_right];
+    bool is_root = parent_root == &__sentinel;
+    bool tmp_color = IsRed( (*node)->header ) ? __red : __black;
 
-    if ( parent == &__sentinel ) { /* deleting the root */
+    (*node)->nodes[_right] = child_inr;
+    (*node)->nodes[_left] = &__sentinel;
+    child_inr->nodes[_parent] = *node;
 
-    }
-    if ( (*node)->nodes[_right] != *inorder ) { /* main case */
-        
-    }
-    else { /* Case where the right child is the in order successor */
-        children[_left]->nodes[_parent] = *inorder;
-        (*inorder)->nodes[_parent] = parent;
-    }
+    (*inorder)->nodes[_left] = child_left;
+    (*inorder)->nodes[_right] = child_right;
+    child_left->nodes[_parent] = child_right->nodes[_parent] = *inorder;
+
+    parent_root->nodes[IsLeftChild(*node) ? _left : _right] = parent_root != &__sentinel ? *inorder : &__sentinel;
+    parent_inr->nodes[IsLeftChild(*inorder) ? _left : _right] = *node;
 
     __root = is_root ? *inorder : __root;
     Node* aux = *node;
     *node = *inorder;
     *inorder = aux;
+
+    SetColor(&(*node)->header, IsRed( (*inorder)->header ) ? __red : __black);
+    SetColor(&(*inorder)->header, tmp_color);
 }
 
 void RBTDelete ( Node* node ) {
@@ -323,4 +327,5 @@ void RBTDelete ( Node* node ) {
     node = &__sentinel;
 
     FixDeletion(resultant_node, color);
+    SetInUse(&resultant_node->header);
 }

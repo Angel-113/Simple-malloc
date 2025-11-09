@@ -6,7 +6,7 @@
 #include "../memtree/MemTree.h"
 
 typedef void* (*alloc_fn)( unsigned long );
-typedef void* (*realloc_fn)( unsigned long );
+typedef void* (*realloc_fn)( void*, unsigned long );
 typedef void (*free_fn)( void* );
 
 typedef struct Allocator {
