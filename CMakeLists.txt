@@ -7,8 +7,9 @@ add_library(Allocators STATIC
         allocator/Allocator.c
         memtree/MemTree.c
         header/Header.c
+        test/test.c
 )
 
-add_executable(Test test.c)
+add_executable(main main.c)
 
-target_link_libraries(Test PRIVATE Allocators)
+target_link_libraries(main PRIVATE Allocators)

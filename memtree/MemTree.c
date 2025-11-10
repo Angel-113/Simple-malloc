@@ -62,27 +62,13 @@ static Node* GetUncle ( const Node *node ) {
     return grandparent->nodes[ IsLeftChild(parent) ? _right : _left ];
 }
 
-static Node* InOrderSuccessor ( Node *root, const unsigned long target ) { /* InOrder Successor function */
+static Node* InOrderSuccessor ( const Node *root ) { /* InOrder Successor function */
     if ( root == &__sentinel ) {
         fprintf(stderr, "InOrderSuccessor function returned NULL ptr");
         return &__sentinel;
     }
-
-    Node *current = root;
-    if ( GetSize(root->header) == target && root->nodes[_right] != &__sentinel ) { /* Left Most node */
-        while ( current->nodes[_left] != &__sentinel ) current = current->nodes[_left];
-        return current;
-    }
-
-    Node *successor = &__sentinel;
-    while ( current != &__sentinel ) {
-        if (target < GetSize(current->header)) {
-            successor = current;
-            current = current->nodes[_left];
-        }
-        else if ( target >= GetSize(current->header) ) current = current->nodes[_right];
-    }
-
+    Node* successor = root->nodes[_right];
+    while ( successor->nodes[_left] != &__sentinel ) successor = successor->nodes[_left];
     return successor;
 }
 
@@ -221,7 +207,11 @@ void RBTInsert ( Node *root, Node *node ) {
 
 static void FixDeletion ( Node *node, const bool color ) { /* Fixes the violations made after deleting a node */
 
-    if ( color || node == &__sentinel ) return; /* No need to fix-up */
+    if ( color ) return; /* No need to fix-up */
+    if ( IsRed(node->header) ) {
+        SetColor(&node->header, __black);
+        return;
+    }
 
     Node* current = node;
     while ( current != &__sentinel ) {
@@ -272,18 +262,25 @@ static void SwapInOrder (Node** node, Node** inorder) {
     Node* child_left = (*node)->nodes[_left];
     Node* child_right = (*node)->nodes[_right];
     bool is_root = parent_root == &__sentinel;
+    bool is_direct_right = child_right == *inorder;
     bool tmp_color = IsRed( (*node)->header ) ? __red : __black;
 
     (*node)->nodes[_right] = child_inr;
     (*node)->nodes[_left] = &__sentinel;
-    child_inr->nodes[_parent] = *node;
+    child_inr->nodes[_parent] = child_inr == &__sentinel ? &__sentinel : *node;
 
-    (*inorder)->nodes[_left] = child_left;
-    (*inorder)->nodes[_right] = child_right;
-    child_left->nodes[_parent] = child_right->nodes[_parent] = *inorder;
+    if ( is_direct_right ) { /* node's right child is the inorder successor */
+        (*inorder)->nodes[_parent] = parent_root;
+        (*inorder)->nodes[_left] = child_left;
+    }
+    else {
+        (*inorder)->nodes[_left] = child_left;
+        (*inorder)->nodes[_right] = child_right;
+        child_left->nodes[_parent] = child_right->nodes[_parent] = *inorder;
+    }
 
     parent_root->nodes[IsLeftChild(*node) ? _left : _right] = parent_root != &__sentinel ? *inorder : &__sentinel;
-    parent_inr->nodes[IsLeftChild(*inorder) ? _left : _right] = *node;
+    if ( !is_direct_right ) parent_inr->nodes[IsLeftChild(*inorder) ? _left : _right] = *node;
 
     __root = is_root ? *inorder : __root;
     Node* aux = *node;
@@ -309,7 +306,7 @@ void RBTDelete ( Node* node ) {
         resultant_node->nodes[ IsLeftChild(node) ? _left : _right ] = &__sentinel;
     }
     else if ( node->nodes[_left] != &__sentinel && node->nodes[_right] != &__sentinel ) { /* Given node has two children */
-        Node* inorder = InOrderSuccessor( GetRoot(), GetSize(node->header) );
+        Node* inorder = InOrderSuccessor( node );
         Node* parent = node->nodes[_parent];
         SwapInOrder( &node, &inorder );
         parent->nodes[ IsLeftChild(node) ? _left : _right ] = inorder;
@@ -324,8 +321,5 @@ void RBTDelete ( Node* node ) {
         resultant_node = aux;
     }
 
-    node = &__sentinel;
-
     FixDeletion(resultant_node, color);
-    SetInUse(&resultant_node->header);
 }

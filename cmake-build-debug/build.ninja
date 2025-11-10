@@ -67,6 +67,12 @@ build CMakeFiles/Allocators.dir/header/Header.c.o: C_COMPILER__Allocators_unscan
   OBJECT_DIR = CMakeFiles/Allocators.dir
   OBJECT_FILE_DIR = CMakeFiles/Allocators.dir/header
 
+build CMakeFiles/Allocators.dir/test/test.c.o: C_COMPILER__Allocators_unscanned_Debug /home/angel/CLionProjects/Simple-malloc/test/test.c || cmake_object_order_depends_target_Allocators
+  DEP_FILE = CMakeFiles/Allocators.dir/test/test.c.o.d
+  FLAGS = -g -std=gnu2x -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/Allocators.dir
+  OBJECT_FILE_DIR = CMakeFiles/Allocators.dir/test
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target Allocators
@@ -75,7 +81,7 @@ build CMakeFiles/Allocators.dir/header/Header.c.o: C_COMPILER__Allocators_unscan
 #############################################
 # Link the static library libAllocators.a
 
-build libAllocators.a: C_STATIC_LIBRARY_LINKER__Allocators_Debug CMakeFiles/Allocators.dir/allocator/Allocator.c.o CMakeFiles/Allocators.dir/memtree/MemTree.c.o CMakeFiles/Allocators.dir/header/Header.c.o
+build libAllocators.a: C_STATIC_LIBRARY_LINKER__Allocators_Debug CMakeFiles/Allocators.dir/allocator/Allocator.c.o CMakeFiles/Allocators.dir/memtree/MemTree.c.o CMakeFiles/Allocators.dir/header/Header.c.o CMakeFiles/Allocators.dir/test/test.c.o
   LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles/Allocators.dir
   POST_BUILD = :
@@ -84,36 +90,36 @@ build libAllocators.a: C_STATIC_LIBRARY_LINKER__Allocators_Debug CMakeFiles/Allo
   TARGET_PDB = Allocators.a.dbg
 
 # =============================================================================
-# Object build statements for EXECUTABLE target Test
+# Object build statements for EXECUTABLE target main
 
 
 #############################################
-# Order-only phony target for Test
+# Order-only phony target for main
 
-build cmake_object_order_depends_target_Test: phony || cmake_object_order_depends_target_Allocators
+build cmake_object_order_depends_target_main: phony || cmake_object_order_depends_target_Allocators
 
-build CMakeFiles/Test.dir/test.c.o: C_COMPILER__Test_unscanned_Debug /home/angel/CLionProjects/Simple-malloc/test.c || cmake_object_order_depends_target_Test
-  DEP_FILE = CMakeFiles/Test.dir/test.c.o.d
+build CMakeFiles/main.dir/main.c.o: C_COMPILER__main_unscanned_Debug /home/angel/CLionProjects/Simple-malloc/main.c || cmake_object_order_depends_target_main
+  DEP_FILE = CMakeFiles/main.dir/main.c.o.d
   FLAGS = -g -std=gnu2x -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles/Test.dir
-  OBJECT_FILE_DIR = CMakeFiles/Test.dir
+  OBJECT_DIR = CMakeFiles/main.dir
+  OBJECT_FILE_DIR = CMakeFiles/main.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target Test
+# Link build statements for EXECUTABLE target main
 
 
 #############################################
-# Link the executable Test
+# Link the executable main
 
-build Test: C_EXECUTABLE_LINKER__Test_Debug CMakeFiles/Test.dir/test.c.o | libAllocators.a || libAllocators.a
+build main: C_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/main.c.o | libAllocators.a || libAllocators.a
   FLAGS = -g
   LINK_LIBRARIES = libAllocators.a
-  OBJECT_DIR = CMakeFiles/Test.dir
+  OBJECT_DIR = CMakeFiles/main.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = Test
-  TARGET_PDB = Test.dbg
+  TARGET_FILE = main
+  TARGET_PDB = main.dbg
 
 
 #############################################
@@ -151,7 +157,7 @@ build Allocators: phony libAllocators.a
 #############################################
 # Folder: /home/angel/CLionProjects/Simple-malloc/cmake-build-debug
 
-build all: phony libAllocators.a Test
+build all: phony libAllocators.a main
 
 # =============================================================================
 # Built-in targets
